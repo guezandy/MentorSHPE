@@ -1,6 +1,8 @@
 package com.lunadeveloper.mentorshpe;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,10 +21,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.parse.ParseUser;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
+    /**Debug TAG **/
+    public static String TAG = MainActivity.class.getSimpleName();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -50,10 +56,18 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        switch(position) {
+            case 0:
+                //replaceFragment(new CanIGoOutFragment(), true, FragmentTransaction.TRANSIT_FRAGMENT_FADE, getString(R.string.title_section3));
+                break;
+            case 1:
+                break;
+            case 2:
+                logout();
+                break;
+            default:
+                break;
+        }
     }
 
     public void onSectionAttached(int number) {
@@ -146,4 +160,41 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+
+    /**
+     * Handles adding all fragments to the view.
+     * @param newFragment The fragment to add.
+     * @param addToBackstack Whether this Fragment should appear in the backstack or not.
+     * @param transition The transition animation to apply
+     * @param backstackName The name
+     */
+    public void replaceFragment(android.support.v4.app.Fragment newFragment, boolean addToBackstack, int transition, String backstackName) {
+        // use fragmentTransaction to replace the fragment
+        Log.i(TAG, "Initializing Fragment Transaction");
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Log.i(TAG, "Replacing the fragment and calling backstack");
+        fragmentTransaction.replace(R.id.container, newFragment, backstackName);
+        if (addToBackstack) {
+            fragmentTransaction.addToBackStack(backstackName);
+        }
+        Log.i(TAG, "setting the transition");
+        fragmentTransaction.setTransition(transition);
+        Log.i(TAG,"Commiting Transaction");
+        fragmentTransaction.commit();
+    }
+
+    private void logout() {
+        // Log the user out
+        ParseUser.logOut();
+
+        // Go to the login view
+        startLoginActivity();
+    }
+
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, ParseLoginDispatchActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 }

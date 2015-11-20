@@ -22,6 +22,12 @@ public class Major extends ParseObject {
     public Major() {
         // A default constructor is required.
     }
+
+    @Override
+    public String toString() {
+        return this.getName(); //what spinner displays
+    }
+
     //name
     public void setName(String name) {
         this.put("name", name);

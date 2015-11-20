@@ -53,4 +53,9 @@ public class College extends ParseObject {
     public String getState() {
         return this.getString("state");
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

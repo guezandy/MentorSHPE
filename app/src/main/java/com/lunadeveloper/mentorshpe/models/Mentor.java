@@ -7,6 +7,7 @@ package com.lunadeveloper.mentorshpe.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 /*
@@ -37,33 +38,39 @@ public class Mentor extends ParseUser {
     public String getName() {
         return this.getString("name");
     }
-    //school (TODO: Need to make full relation to college)
-    public void setSchool(College school) {
-        //this.put("school", school.getName());
+
+    public void setSchool(String school) {
+        this.put("school", school);
     }
+
     public String getSchool() {
-        //return this.getString("school");
-        return "";
+        return this.getString("school");
     }
     //year fresh, soph, junir, senior etc
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.put("year", year);
     }
-    public int getYear() {
-        return this.getInt("year");
+    public String getYear() {
+        return this.getString("year");
     }
-    //hometown
     public void setHometown(String town) {
         this.put("hometown", town);
     }
-
-    public void setMajor(Major major){
+    public void setMajor(String major){
         this.put("major", major);
     }
+    public String getMajor() {
+        return this.getString("major");
+    }
 
-    public int getMajor(){
-        //TODO: Finish this out;
-        return 0;
+    public void setMentorship(Mentorship[] men){
+        for(Mentorship m : men) {
+            ParseObject join = new ParseObject("MentorshipUserjoin");
+            join.put("mentorshipId",m.getObjectId());
+            join.put("user", this.getObjectId());
+            join.put("mentorshipLabel", m.getName());
+            join.saveInBackground();
+        }
     }
 
     //mentorship available SAT, ACT, MATH, etc etc
