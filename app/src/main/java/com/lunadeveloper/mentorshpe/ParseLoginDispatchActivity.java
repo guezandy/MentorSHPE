@@ -76,7 +76,7 @@ public class ParseLoginDispatchActivity extends Activity {
         });
 
         //TODO: remove this debugging code set to true to skip login
-        boolean debugMode = true;
+        boolean debugMode = false;
         if (debugMode) {
             username.setText("a");
             password.setText("a");
@@ -130,11 +130,17 @@ public class ParseLoginDispatchActivity extends Activity {
             public void done(ParseUser user, ParseException e) {
                 if (e == null) {
                     Toast.makeText(getApplicationContext(),
-                            "Welcome, " + user.getString("first_name"),
+                            "Welcome, " + user.getString("name"),
                             Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(ParseLoginDispatchActivity.this,
-                            MainActivity.class);
-                    startActivity(i);
+                    if(user.getBoolean("isMentor")) {
+                        //TODO: Make 2 different views
+                        Intent i = new Intent(ParseLoginDispatchActivity.this, MainActivity.class);
+                        startActivity(i);
+                    } else {
+                        Intent i = new Intent(ParseLoginDispatchActivity.this,
+                                MainActivity.class);
+                        startActivity(i);
+                    }
                 } else {
                     // Signup failed. Look at the ParseException to see what
                     // happened.

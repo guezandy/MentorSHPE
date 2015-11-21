@@ -10,6 +10,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 /*
@@ -23,6 +24,7 @@ public class Mentee extends ParseUser {
 
     public Mentee() {
         // A default constructor is required.
+        this.put("isMentor", false);
     }
 
     public ParseFile getImage() {
@@ -47,11 +49,11 @@ public class Mentee extends ParseUser {
         return this.getString("school");
     }
     //year fresh, soph, junir, senior etc
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.put("year", year);
     }
-    public int getYear() {
-        return this.getInt("year");
+    public String getYear() {
+        return this.getString("year");
     }
     //hometown
     public void setHometown(String town) {
@@ -67,4 +69,30 @@ public class Mentee extends ParseUser {
         return 0;
     }
 
+    public void setIsMentor() {
+        this.put("isMentor", false);
+    }
+
+    public void setCollegeGoal(String school) {
+        this.put("goal_college", school);
+    }
+
+    public String getCollegeGoal() {
+        return this.getString("goal_college");
+    }
+
+    public void setMajorGoal(String major) {
+        this.put("goal_major", major);
+    }
+
+    public String getMajorGoal() {
+        return this.getString("goal_major");
+    }
+
+    public void setMentorship(Mentorship[] men) {
+        ParseRelation relation = this.getRelation("mentorships");
+        for(Mentorship m : men) {
+            relation.add(m);
+        }
+    }
 }

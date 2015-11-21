@@ -8,6 +8,7 @@ package com.lunadeveloper.mentorshpe.models;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 /*
@@ -21,6 +22,7 @@ public class Mentor extends ParseUser {
 
     public Mentor() {
         // A default constructor is required.
+        this.put("isMentor", true);
     }
 
     public ParseFile getImage() {
@@ -63,16 +65,31 @@ public class Mentor extends ParseUser {
         return this.getString("major");
     }
 
+    public void setMentorshipKeyArray(String[] keys) {
+        this.put("mentorshipKeys", keys);
+    }
+
+    /* We dont need a join table just use ParseRelation
     public void setMentorship(Mentorship[] men){
         for(Mentorship m : men) {
             ParseObject join = new ParseObject("MentorshipUserjoin");
             join.put("mentorshipId",m.getObjectId());
-            join.put("user", this.getObjectId());
+            join.put("user", ParseUser.getCurrentUser());
             join.put("mentorshipLabel", m.getName());
             join.saveInBackground();
         }
+    }*/
+
+    public void setMentorship(Mentorship[] men) {
+        ParseRelation relation = this.getRelation("mentorships");
+        for(Mentorship m : men) {
+            relation.add(m);
+        }
     }
 
+    public void setIsMentor(){
+        this.put("isMentor", true);
+    }
     //mentorship available SAT, ACT, MATH, etc etc
 
 }

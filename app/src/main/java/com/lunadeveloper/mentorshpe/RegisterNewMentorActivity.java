@@ -24,6 +24,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,10 +138,11 @@ public class RegisterNewMentorActivity extends Activity {
         mRegisterAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if (validateFields()) {
-                    //if (validatePasswordMatch()) {
-                        //final Mentorship[] men = new Mentorship[map.size()];
-                        //map.values().toArray(men);
+                if (validateFields()) {
+                    if (validatePasswordMatch()) {
+                        //final String[] men = new String[map.size()];
+                        final Mentorship[] men = new Mentorship[map.size()];
+                        map.values().toArray(men);
                         Mentor newMentor = new Mentor();
                         newMentor.setUsername(mEditUsername.getText().toString());
                         newMentor.setPassword(mEditPassword.getText().toString());
@@ -149,46 +151,28 @@ public class RegisterNewMentorActivity extends Activity {
                         newMentor.setMajor(mentor_major.getSelectedItem().toString());
                         newMentor.setYear(mYear.getSelectedItem().toString());
                         newMentor.setHometown(mHomeTown.getText().toString());
-                        newMentor.saveInBackground(new SaveCallback() {
+                        newMentor.setIsMentor();
+                        newMentor.setMentorship(men);
+                        System.out.println("CALLING SAVE");
+                        newMentor.signUpInBackground(new SignUpCallback() {
                             @Override
                             public void done(ParseException e) {
+                                System.out.println("SAVE COMPELTE");
                                 Intent i = new Intent(RegisterNewMentorActivity.this, ParseLoginDispatchActivity.class);
                                 startActivity(i);
                             }
                         });
-                    //} else {
-                    //    Toast.makeText(v.getContext(), "Password doesn't match",
-                    //            Toast.LENGTH_SHORT).show();
-                    //}
-                //} else {
-                //    Toast.makeText(v.getContext(), "Fields not filled in", Toast.LENGTH_SHORT)
-                //            .show();
-                //}
+                    } else {
+                        Toast.makeText(v.getContext(), "Password doesn't match",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(v.getContext(), "Fields not filled in", Toast.LENGTH_SHORT)
+                            .show();
+                }
             }
         });
 
-    }
-
-    public List<String> getUserInformation() {
-        final List<String> registerDetails = new ArrayList<String>();
-        registerDetails.add(0, mEditUsername.getText().toString());
-        registerDetails.add(1, mEditPassword.getText().toString());
-        registerDetails.add(2, mEditFullName.getText().toString());
-        return registerDetails;
-    }
-    public void registerAccount(View view) {
-        if (validateFields()) {
-            if (validatePasswordMatch()) {
-                mParseService = new ParseService(view.getContext());
-                mParseService.registerNewMentor(view.getContext(), getUserInformation());
-            } else {
-                Toast.makeText(this, "Password doesn't match",
-                        Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Fields not filled in", Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 
     private boolean validateFields() {
